@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard en Power BI | DataMuni Perú</title>
+    <meta name="description" content="Panel interactivo del RENAMU: reporte Power BI y buscador de las 1 892 municipalidades del Perú por ubigeo, departamento, tipo y alcalde, 2021–2026.">
+    <meta name="theme-color" content="#1C1638">
+    <link rel="canonical" href="https://michaeldm05.github.io/dashboard.html">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="DataMuni Perú">
+    <meta property="og:locale" content="es_PE">
+    <meta property="og:title" content="Dashboard en Power BI | DataMuni Perú">
+    <meta property="og:description" content="Reporte Power BI y buscador de las 1 892 municipalidades del Perú por ubigeo, departamento, tipo y alcalde.">
+    <meta property="og:url" content="https://michaeldm05.github.io/dashboard.html">
+    <meta property="og:image" content="https://michaeldm05.github.io/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Dashboard en Power BI | DataMuni Perú">
+    <meta name="twitter:image" content="https://michaeldm05.github.io/og-image.png">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://michaeldm05.github.io/index.html" },
+            { "@type": "ListItem", "position": 2, "name": "Dashboard en Power BI", "item": "https://michaeldm05.github.io/dashboard.html" }
+        ]
+    }
+    </script>
+    <link rel="stylesheet" href="css/fonts.css">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Adelanta la descarga de la versión ligera del año por defecto: no bloquea
+         el render y evita esperar a que corra el JS para empezar a pedirla. -->
+    <link rel="preload" as="script" href="data/municipios_2026_lite.js">
+</head>
+<body>
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+    <!-- Franja de aviso: proyecto personal e independiente -->
+    <div class="topbar">
+        <div class="container topbar-inner">
+            <span class="topbar-org"><span class="topbar-dot" aria-hidden="true"></span>Proyecto personal e independiente · Datos públicos del INEI (RENAMU)</span>
+            <span class="topbar-links"><a href="acerca.html">Acerca del proyecto</a></span>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar" aria-label="Navegación principal">
+        <div class="navbar-inner">
+            <a href="index.html" class="navbar-logo">
+                <span class="navbar-logo-icon" aria-hidden="true"><img src="img/logo-datamuni.svg" alt="" width="20" height="29"></span>
+                <span class="navbar-logo-text"><span class="navbar-logo-name">DataMuni Perú</span><span class="navbar-logo-sub">Datos públicos del RENAMU</span></span>
+            </a>
+            <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks" aria-label="Abrir menú de navegación">
+                <span class="material-icons icon-open" aria-hidden="true">menu</span>
+                <span class="material-icons icon-close" aria-hidden="true">close</span>
+            </button>
+            <ul class="navbar-links" id="navLinks">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="dashboard.html" class="active" aria-current="page">Dashboard en Power BI</a></li>
+                <li><a href="datos.html">Datos</a></li>
+                <li><a href="estadisticas.html">Estadísticas</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+                <li class="navbar-cta-item"><a href="datos.html#descargas" class="navbar-cta"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>Descargar datos</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <nav class="breadcrumb" aria-label="Ruta de navegación"><a href="index.html">Inicio</a><span aria-hidden="true">/</span><span>Dashboard en Power BI</span></nav>
+            <h1>Dashboard en Power BI</h1>
+            <p>Indicadores municipales interactivos del RENAMU 2021 al 2026. En la parte inferior se encuentra el directorio con las 1&nbsp;892 municipalidades.</p>
+            <h2 class="sr-only">Indicadores clave</h2>
+            <div class="stats-grid header-kpis">
+                <div class="stat-item">
+                    <div class="stat-item-number" id="totalMuni">0</div>
+                    <div class="stat-item-label">Municipalidades provinciales y distritales</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-item-number" id="totalDept">0</div>
+                    <div class="stat-item-label">Departamentos</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-item-number" id="totalProvConst">0</div>
+                    <div class="stat-item-label">Provincia Constitucional</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-item-number" id="promedioPCs">0</div>
+                    <div class="stat-item-label">PC operativas por municipalidad</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-item-number" id="pctPortal">0%</div>
+                    <div class="stat-item-label">Municipalidades tienen portal de transparencia</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main id="contenido">
+
+    <!-- Power BI -->
+    <section class="section">
+        <div class="container">
+            <div class="powerbi-card">
+                <div class="powerbi-header">
+                    <div class="powerbi-header-title">
+                        <span class="powerbi-live-dot" aria-hidden="true"></span>
+                        <div>
+                            <h3>Reporte RENAMU en Power BI</h3>
+                            <div class="powerbi-subtitle">Acceso público · publicado en la web</div>
+                        </div>
+                    </div>
+                    <div class="powerbi-header-actions">
+                        <button class="powerbi-icon-btn" title="Recargar reporte" aria-label="Recargar reporte" onclick="recargarPowerBI()">
+                            <span class="material-icons" aria-hidden="true">refresh</span><span>Recargar</span>
+                        </button>
+                        <button class="powerbi-icon-btn" title="Pantalla completa" aria-label="Ver en pantalla completa" onclick="pantallaCompletaPowerBI()">
+                            <span class="material-icons" aria-hidden="true">fullscreen</span><span>Pantalla completa</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="powerbi-wrapper" id="powerbiWrapper">
+                    <div class="powerbi-loading" id="powerbiLoading">
+                        <span>Cargando reporte…</span>
+                        <div class="powerbi-loading-bar"><span></span></div>
+                    </div>
+                    <iframe
+                        id="powerbiFrame"
+                        title="RENAMU - Reporte Power BI"
+                        src="https://app.powerbi.com/view?r=eyJrIjoiYmJkMzA2ODUtZGY1Ny00NjlkLWE5OWQtNzU2MjQxNzljOTRmIiwidCI6IjQxMzgzODJlLWI1MTEtNDZhZC04ZjFmLWExMjIzZGE1ZDU3MCIsImMiOjR9"
+                        frameborder="0"
+                        allowfullscreen
+                        loading="lazy"
+                        onload="if (window.powerBICargado) powerBICargado(); else this.previousElementSibling.style.display='none';">
+                    </iframe>
+                </div>
+            </div>
+            <p class="powerbi-privacy-note">
+                <span class="material-icons" aria-hidden="true">info</span>
+                <span>
+                    Este reporte lo sirve Microsoft Power BI, que puede usar sus propias cookies y recibir tu
+                    dirección IP. Más información en la <a href="cookies.html#terceros">Política de Cookies</a>.
+                </span>
+            </p>
+            <p class="filter-hint">Fuente: INEI – Registro Nacional de Municipalidades (RENAMU). Procesamiento y visualización: proyecto independiente.</p>
+        </div>
+    </section>
+
+    <!-- Filters -->
+    <section class="section" id="directorio" style="padding-top:0;">
+        <div class="container">
+            <h2 class="subsection-title">Directorio Nacional de Municipalidades Provinciales y Distritales</h2>
+            <p class="subsection-subtitle">Filtra por Renamu, departamento, tipo o ubigeo, o escribe un distrito, provincia o alcalde.</p>
+            <div class="filter-bar">
+                <div class="filter-grid">
+                    <div class="filter-group">
+                        <label for="filtroAnio">RENAMU</label>
+                        <select class="filter-select" id="filtroAnio"></select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filtroDepto">Departamento</label>
+                        <select class="filter-select" id="filtroDepto">
+                            <option value="">Todos</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filtroTipo">Tipo</label>
+                        <select class="filter-select" id="filtroTipo">
+                            <option value="">Todos</option>
+                            <option value="M">Metropolitana</option>
+                            <option value="1">Provincial</option>
+                            <option value="2">Distrital</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="filtroUbigeo">Ubigeo</label>
+                        <input type="text" inputmode="numeric" class="filter-input" id="filtroUbigeo" placeholder="010101">
+                    </div>
+                    <div class="filter-group">
+                        <label for="busqueda">Buscar</label>
+                        <input type="search" class="filter-input" id="busqueda" placeholder="Departamento / Provincia / Distrito">
+                    </div>
+                    <div class="filter-group filter-actions">
+                        <button class="btn btn-ghost btn-sm" id="limpiarFiltros" type="button">
+                            <span class="material-icons" style="font-size:16px;" aria-hidden="true">restart_alt</span>
+                            Limpiar filtros
+                        </button>
+                    </div>
+                </div>
+                <p class="filter-hint">Haz clic en una cabecera de la tabla para ordenarla.</p>
+            </div>
+
+            <!-- Table -->
+            <div class="table-container">
+                <div class="table-top-bar">
+                    <div class="table-top-bar-meta">
+                        <span class="table-scroll-hint">
+                            <span class="material-icons" style="font-size:14px;" aria-hidden="true">swipe</span>
+                            Desliza para ver más
+                        </span>
+                        <span class="table-count" id="resultadosCount" aria-live="polite"></span>
+                    </div>
+                    <a class="btn btn-outline btn-sm" id="descargaDirectorio" href="https://cdn.www.gob.pe/uploads/document/file/9915971/8058591-cuadros-excel-directorio-nacional-de-gobiernos-regionales-municipalidades-provinciales-distritales-y-de-centros-poblados-2026.zip?v=1778013297" download rel="noopener" title="Cuadros Excel del Directorio Nacional de Gobiernos Regionales, Municipalidades Provinciales, Distritales y de Centros Poblados 2026 (ZIP, gob.pe)">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+                        <span id="descargaDirectorioTexto">Descargar directorio oficial (sitio del INEI / gob.pe) ↗</span>
+                    </a>
+                </div>
+                <div class="table-scroll">
+                    <table class="data-table">
+                        <caption class="sr-only">Municipalidades del registro RENAMU según los filtros aplicados</caption>
+                        <thead>
+                            <tr>
+                                <th data-campo="ubigeo" tabindex="0" aria-sort="none">Ubigeo</th>
+                                <th data-campo="departamento" tabindex="0" aria-sort="none">Departamento</th>
+                                <th data-campo="provincia" tabindex="0" aria-sort="none">Provincia</th>
+                                <th data-campo="distrito" tabindex="0" aria-sort="none">Distrito</th>
+                                <th data-campo="tipo_municipalidad" tabindex="0" aria-sort="none">Tipo</th>
+                                <th data-campo="nombre_alcalde" tabindex="0" aria-sort="none">Nombres y Apellidos del Alcalde</th>
+                                <th data-campo="sexo_alcalde" tabindex="0" aria-sort="none">Sexo</th>
+                                <th data-campo="direccion" tabindex="0" aria-sort="none">Dirección</th>
+                                <th data-campo="codigo_ciudad" tabindex="0" aria-sort="none">Código de ciudad</th>
+                                <th data-campo="telefonos" tabindex="0" aria-sort="none">Teléfonos</th>
+                                <th data-campo="correo" tabindex="0" aria-sort="none">Correo Electrónico</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaBody">
+                            <tr>
+                                <td colspan="11" class="table-state">
+                                    <span class="table-state-spinner" aria-hidden="true"></span>
+                                    Cargando datos…
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <p class="filter-hint" id="directorioNota" hidden></p>
+        </div>
+    </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <span class="footer-logo"><span class="navbar-logo-icon" aria-hidden="true"><img src="img/logo-datamuni.svg" alt="" width="20" height="29"></span>DataMuni Perú</span>
+                    <p>Consulta y visualización de datos públicos del Registro Nacional de Municipalidades (RENAMU).</p>
+                </div>
+                <div>
+                    <h2>Navegación</h2>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Inicio</a></li>
+                        <li><a href="dashboard.html">Dashboard en Power BI</a></li>
+                        <li><a href="datos.html">Datos</a></li>
+                        <li><a href="estadisticas.html">Estadísticas</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h2>Contacto</h2>
+                    <ul class="footer-links">
+                        <li><a href="contacto.html">Formulario</a></li>
+                        <li><a href="acerca.html">Acerca del proyecto</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>Proyecto personal e independiente, sin vinculación institucional con el INEI. Datos: INEI – Registro Nacional de Municipalidades (RENAMU). © 2026 Michell Delesma Montesinos.</span>
+                <nav aria-label="Información legal">
+                    <ul class="footer-legal">
+                        <li><a href="privacidad.html">Privacidad</a></li>
+                        <li><a href="terminos.html">Términos</a></li>
+                        <li><a href="cookies.html">Cookies</a></li>
+                        <li><button type="button" data-abrir-cookies>Configurar cookies</button></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </footer>
+
+    <div class="toast" id="toast" role="status" aria-live="polite">
+        <span class="material-icons toast-icon" aria-hidden="true">check_circle</span>
+        <span id="toastMessage"></span>
+    </div>
+
+    <script src="data/municipios.js"></script>
+    <script type="text/plain" data-consent="analitica" data-src="js/vendor/goatcounter.js" data-goatcounter="https://michellalex.goatcounter.com/count"></script>
+    <script src="js/consent.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>
