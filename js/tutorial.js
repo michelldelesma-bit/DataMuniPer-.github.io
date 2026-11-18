@@ -1,11 +1,11 @@
-// RENAMU · Video tutorial "Recorrido en 2 minutos"
+// DataMuni Perú · Video tutorial "Recorrido en 2 minutos"
 // - Cualquier elemento con [data-tutorial] abre el video en una ventana (<dialog>).
 // - En la primera visita a Inicio aparece una sugerencia flotante (después del
 //   banner de cookies). Al cerrarla o ver el video no vuelve a mostrarse:
 //   se recuerda en localStorage (renamu_tutorial_visto), declarado en la Política de Cookies.
 
 (function () {
-    const VIDEO = 'media/RENAMU_recorrido_2min.mp4';
+    const VIDEO = 'media/DataMuniPeru_recorrido_2min.mp4';
     const CLAVE = 'renamu_tutorial_visto';
     let dialogo = null;
 
